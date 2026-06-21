@@ -54,6 +54,11 @@
   .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}
   .hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(120% 80% at 50% 0%,#1a1a18 0%,#070707 60%)}
   .hero-photo{position:absolute;inset:0;z-index:0;background:url('images/kristen-9-644.jpg') center/cover;opacity:.18;filter:grayscale(1) contrast(1.1)}
+  /* background video */
+  .hero-video{position:absolute;inset:0;z-index:0;overflow:hidden;background:#070707}
+  .hero-video #ytbg,.hero-video iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;pointer-events:none;border:0}
+  .hero-video-tint{position:absolute;inset:0;z-index:1;background:rgba(7,7,7,.55)}
   .hero-vignette{position:absolute;inset:0;z-index:1;background:radial-gradient(circle at 50% 45%,transparent 35%,#070707 92%)}
   .logo-wrap{position:relative;z-index:3;width:min(87vw,630px);aspect-ratio:1;display:flex;align-items:center;justify-content:center}
   /* transparent logo: white lettering, green halo hugs the letters (no square) */
@@ -225,7 +230,7 @@
 
 <header class="hero" id="top">
   <div class="hero-bg"></div>
-  <div class="hero-photo" id="heroPhoto"></div>
+  <div class="hero-video" aria-hidden="true"><div id="ytbg"></div><div class="hero-video-tint"></div></div>
   <div class="hero-vignette"></div>
   <div class="logo-wrap"><img class="logo-art" src="images/logo-clear.png" alt="Gross Photo Studio"></div>
   <span class="drip"></span><span class="drip"></span><span class="drip"></span>
@@ -393,6 +398,27 @@
 
   // ---- booking form (mock) ----
   function submitBook(e){e.preventDefault();document.getElementById('bookForm').querySelectorAll('input,select,textarea,button').forEach(el=>el.style.display='none');document.getElementById('bookOk').style.display='block';return false;}
+</script>
+
+<!-- background YouTube video: muted, autoplay, loops back to 2:54 -->
+<script>
+  (function(){
+    var START=174; // 2:54
+    var tag=document.createElement('script');
+    tag.src="https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+    window.onYouTubeIframeAPIReady=function(){
+      window._yt=new YT.Player('ytbg',{
+        videoId:'s49F8Y_c7_o',
+        playerVars:{autoplay:1,controls:0,mute:1,start:START,playsinline:1,loop:0,
+          modestbranding:1,disablekb:1,rel:0,fs:0,iv_load_policy:3},
+        events:{
+          onReady:function(e){e.target.mute();e.target.seekTo(START,true);e.target.playVideo();},
+          onStateChange:function(e){if(e.data===YT.PlayerState.ENDED){e.target.seekTo(START,true);e.target.playVideo();}}
+        }
+      });
+    };
+  })();
 </script>
 </body>
 </html>
